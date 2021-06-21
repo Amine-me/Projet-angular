@@ -1,0 +1,99 @@
+<div class="container mt-2">
+  <div fxLayout="column" *ngIf="isReady">
+    <div fxLayout="row" fxLayoutAlign="start center" class="mb-2">
+      <h2>
+        {{
+        editId
+        ? 'Modifier la publication : ' + form.controls["title"].value
+        : 'Ajouter une nouvelle publication'
+        }}
+      </h2>
+    </div>
+    <div fxLayout="row">
+      <mat-card style="width: 100%;">
+        <form [formGroup]="form" (submit)="onSubmit()">
+          <div fxLayout="row">
+            <mat-form-field class="full_width p-2" appearance="outline">
+              <mat-label>Titre</mat-label>
+              <input matInput placeholder="Titre" formControlName="title" required>
+              <mat-icon matSuffix>create</mat-icon>
+              <mat-error *ngIf="form.controls['title'].hasError('required')">
+                Le titre est <strong>obligatoire</strong>
+              </mat-error>
+              <mat-error *ngIf="form.controls['title'].hasError('minlength')">
+                Le titre est <strong>trop court</strong>
+              </mat-error>
+              <mat-error *ngIf="form.controls['title'].hasError('maxlength')">
+                Le titre est <strong>trop long</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="full_width p-2" appearance="outline">
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="type" required>
+                <mat-option value="NEWSPAPER_ARTICLE">Article de journal</mat-option>
+                <mat-option value="BOOK">Livre</mat-option>
+                <mat-option value="POST">Poste</mat-option>
+              </mat-select>
+              <mat-icon matSuffix>merge_type</mat-icon>
+              <mat-error *ngIf="form.controls['type'].hasError('required')">
+                Le type est <strong>obligatoire</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div fxLayout="row">
+            <mat-form-field class="full_width p-2" appearance="outline">
+              <mat-label>Lien</mat-label>
+              <input matInput placeholder="Link" formControlName="link" required>
+              <mat-icon matSuffix>link</mat-icon>
+              <mat-error *ngIf="form.controls['link'].hasError('required')">
+                Le lien est <strong>obligatoire</strong>
+              </mat-error>
+              <mat-error *ngIf="form.controls['link'].hasError('pattern')">
+                Le lien n'est <strong>pas valide.</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="full_width p-2" appearance="outline">
+              <mat-label>Lien PDF</mat-label>
+              <input matInput placeholder="PDF link" formControlName="pdfSource" required>
+              <mat-icon matSuffix>picture_as_pdf</mat-icon>
+              <mat-error *ngIf="form.controls['pdfSource'].hasError('required')">
+                Le lien PDF <strong>obligatoire</strong>
+              </mat-error>
+              <mat-error *ngIf="form.controls['pdfSource'].hasError('pattern')">
+                Le lien PDF n'est <strong>pas valide.</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div fxLayout="row">
+            <mat-form-field class="full_width p-2" appearance="outline">
+              <mat-label>Collaborateurs</mat-label>
+              <mat-chip-list #contr_chipList multiple>
+                <mat-chip *ngFor="let id of form.controls['contributers_ids'].value" (removed)="removeMember(id)"
+                  selectable removable>
+                  {{ getMemberFullName(id) }}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input #contr_input placeholder="Select Contributers..." [matChipInputFor]="contr_chipList"
+                  [matAutocomplete]="contr_auto">
+              </mat-chip-list>
+              <mat-icon matSuffix>assignment_ind</mat-icon>
+              <mat-autocomplete #contr_auto="matAutocomplete" (optionSelected)="addMember($event)">
+                <mat-option *ngFor="let member of getfiltredMembers(contr_input.value)" [value]="member.id">
+                  {{ member.surname + ' ' + member.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <button mat-stroked-button color="danger" type="cancel" (click)="onCancel(); $event.preventDefault();">
+              Annuler
+            </button>
+            <button mat-stroked-button color="primary" type="submit">
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+</div>

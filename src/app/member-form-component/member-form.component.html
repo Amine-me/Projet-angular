@@ -1,0 +1,348 @@
+<div class="container mt-2">
+  <div fxLayout="column" *ngIf="isReady">
+    <div fxLayout="row" fxLayoutAlign="start center" class="mb-2">
+      <h2>
+        {{
+        editId
+        ? 'Modifier le profil de : ' + form.controls["surname"].value + ' ' + form.controls["name"].value
+        : 'Ajouter un nouveau membre'
+        }}
+      </h2>
+    </div>
+
+
+
+
+    <mat-accordion>
+      <mat-expansion-panel hideToggle (click)="setMemberType('STUDENT')"
+        [hidden]="getMemberType()!=='STUDENT' && editId">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Etudiant
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div fxLayout="row">
+          <mat-card style="width: 100%;">
+            <form [formGroup]="form" (submit)="onSubmit()">
+              <div fxLayout="row">
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Prénom</mat-label>
+                  <input matInput placeholder="Prénom" formControlName="surname" required>
+                  <mat-icon matSuffix>face</mat-icon>
+                  <mat-error *ngIf="form.controls['surname'].hasError('required')">
+                    Le champ du prénom est <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['surname'].hasError('minlength')">
+                    Le prénom est <strong>trop court</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['surname'].hasError('maxlength')">
+                    Le prénom est <strong>trop long</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Nom</mat-label>
+                  <input matInput placeholder="Nom" formControlName="name" required>
+                  <mat-icon matSuffix>face</mat-icon>
+                  <mat-error *ngIf="form.controls['name'].hasError('required')">
+                    Le champ du nom est <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['name'].hasError('minlength')">
+                    Le nom est <strong>trop court</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['name'].hasError('maxlength')">
+                    Le nom est <strong>trop long</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row">
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>CIN</mat-label>
+                  <input matInput placeholder="CIN" maxlength="8" formControlName="cin" required>
+                  <mat-icon matSuffix>credit_card</mat-icon>
+                  <mat-error *ngIf="form.controls['cin'].hasError('required')">
+                    CIN <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['cin'].hasError('pattern')">
+                    Le numéro du CIN dois avoir <strong>8 chiffres.</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput placeholder="Email" formControlName="email" required>
+                  <mat-icon matSuffix>alternate_email</mat-icon>
+                  <mat-error *ngIf="form.controls['email'].hasError('required')">
+                    l'email est <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['email'].hasError('email')">
+                    l'email n'est <strong>pas valide.</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Password</mat-label>
+                  <input matInput placeholder="Mot de passe" type="password" formControlName="password"
+                    [required]="!editId">
+                  <mat-icon matSuffix>keyboard_hide</mat-icon>
+                  <mat-error *ngIf="form.controls['password'].hasError('required')">
+                    Le Mot de passe est <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row">
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Date de naissance</mat-label>
+                  <input matInput [matDatepicker]="birthdatepicker" (click)="birthdatepicker.open()"
+                    formControlName="birthdate" required>
+                  <mat-error *ngIf="form.controls['birthdate'].hasError('required')">
+                    La date de naissance est <strong> obligatoire</strong>
+                  </mat-error>
+                  <mat-datepicker-toggle matSuffix [for]="birthdatepicker"></mat-datepicker-toggle>
+                  <mat-datepicker #birthdatepicker disabled="false"></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>CV</mat-label>
+                  <input matInput placeholder="Curriculum Vitae Link" formControlName="cv" required>
+                  <mat-icon matSuffix>picture_as_pdf</mat-icon>
+                  <mat-error *ngIf="form.controls['cv'].hasError('required')">
+                    Le CV est <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['cv'].hasError('pattern')">
+                    Le lien du CV <strong>n'est pas valide.</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row" *ngIf="getMemberType()==='STUDENT'">
+                <div fxLayout="row">
+                  <mat-form-field class="full_width p-2" appearance="outline">
+                    <mat-label>Date d'inscription</mat-label>
+                    <input matInput [matDatepicker]="inscriptiondatepicker" (click)="inscriptiondatepicker.open()"
+                      formControlName="inscriptionDate" required>
+                    <mat-error *ngIf="form.controls['inscriptionDate'].hasError('required')">
+                      La date d'inscription est <strong>obligatoire</strong>
+                    </mat-error>
+                    <mat-datepicker-toggle matSuffix [for]="inscriptiondatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker #inscriptiondatepicker disabled="false"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Dimplôme</mat-label>
+                  <mat-select formControlName="diploma" required>
+                    <mat-option value="MASTER">Master</mat-option>
+                    <mat-option value="THESIS">Thèse </mat-option>
+                    <mat-option value="ING">Ingénierie </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>school</mat-icon>
+                  <mat-error *ngIf="form.controls['diploma'].hasError('required')">
+                    le dimplôme <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Superviseur</mat-label>
+                  <mat-select formControlName="_supervisorId" required>
+                    <mat-option *ngFor="let teacher of teachers" [value]="teacher.id">
+                      {{ teacher.surname + ' ' + teacher.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                  <mat-error *ngIf="form.controls['_supervisorId'].hasError('required')">
+                    Le superviseur est <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row" *ngIf="getMemberType()==='TEACHER'">
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <input matInput placeholder="Grade" formControlName="grade" required>
+                  <mat-icon matSuffix>grade</mat-icon>
+                  <mat-error *ngIf="form.controls['grade'].hasError('required')">
+                    La grade est <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <input matInput placeholder="Établissement" formControlName="establishment" required>
+                  <mat-icon matSuffix>account_balance</mat-icon>
+                  <mat-error *ngIf="form.controls['establishment'].hasError('required')">
+                    L'établissement est <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <button mat-stroked-button color="danger" type="cancel" (click)="onCancel(); $event.preventDefault();">
+                  Annuler
+                </button>
+                <button mat-stroked-button color="primary" type="submit">
+                  Sauvgarder
+                </button>
+              </div>
+            </form>
+          </mat-card>
+
+        </div>
+      </mat-expansion-panel>
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+        (click)="setMemberType('TEACHER')" [hidden]="getMemberType()!=='TEACHER' && editId">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Enseignant
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div fxLayout="row">
+          <mat-card style="width: 100%;">
+            <form [formGroup]="form" (submit)="onSubmit()">
+              <div fxLayout="row">
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Prénom</mat-label>
+                  <input matInput placeholder="Prénom" formControlName="surname" required>
+                  <mat-icon matSuffix>face</mat-icon>
+                  <mat-error *ngIf="form.controls['surname'].hasError('required')">
+                    Le champ du prénom est <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['surname'].hasError('minlength')">
+                    Le prénom est <strong>trop court</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['surname'].hasError('maxlength')">
+                    Le prénom est <strong>trop long</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Nom</mat-label>
+                  <input matInput placeholder="Nom" formControlName="name" required>
+                  <mat-icon matSuffix>face</mat-icon>
+                  <mat-error *ngIf="form.controls['name'].hasError('required')">
+                    Le champ du nom est <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['name'].hasError('minlength')">
+                    Le nom est <strong>trop court</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['name'].hasError('maxlength')">
+                    Le nom est <strong>trop long</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row">
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>CIN</mat-label>
+                  <input matInput placeholder="CIN" maxlength="8" formControlName="cin" required>
+                  <mat-icon matSuffix>credit_card</mat-icon>
+                  <mat-error *ngIf="form.controls['cin'].hasError('required')">
+                    CIN <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['cin'].hasError('pattern')">
+                    Le numéro du CIN dois avoir <strong>8 chiffres.</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput placeholder="Email" formControlName="email" required>
+                  <mat-icon matSuffix>alternate_email</mat-icon>
+                  <mat-error *ngIf="form.controls['email'].hasError('required')">
+                    l'email est <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['email'].hasError('email')">
+                    l'email n'est <strong>pas valide.</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Password</mat-label>
+                  <input matInput placeholder="Mot de passe" type="password" formControlName="password"
+                    [required]="!editId">
+                  <mat-icon matSuffix>keyboard_hide</mat-icon>
+                  <mat-error *ngIf="form.controls['password'].hasError('required')">
+                    Le Mot de passe est <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row">
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Date de naissance</mat-label>
+                  <input matInput [matDatepicker]="birthdatepicker" (click)="birthdatepicker.open()"
+                    formControlName="birthdate" required>
+                  <mat-error *ngIf="form.controls['birthdate'].hasError('required')">
+                    La date de naissance est <strong> obligatoire</strong>
+                  </mat-error>
+                  <mat-datepicker-toggle matSuffix [for]="birthdatepicker"></mat-datepicker-toggle>
+                  <mat-datepicker #birthdatepicker disabled="false"></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>CV</mat-label>
+                  <input matInput placeholder="Curriculum Vitae Link" formControlName="cv" required>
+                  <mat-icon matSuffix>picture_as_pdf</mat-icon>
+                  <mat-error *ngIf="form.controls['cv'].hasError('required')">
+                    Le CV est <strong>obligatoire</strong>
+                  </mat-error>
+                  <mat-error *ngIf="form.controls['cv'].hasError('pattern')">
+                    Le lien du CV <strong>n'est pas valide.</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row" *ngIf="getMemberType()==='STUDENT'">
+                <div fxLayout="row">
+                  <mat-form-field class="full_width p-2" appearance="outline">
+                    <mat-label>Date d'inscription</mat-label>
+                    <input matInput [matDatepicker]="inscriptiondatepicker" (click)="inscriptiondatepicker.open()"
+                      formControlName="inscriptionDate" required>
+                    <mat-error *ngIf="form.controls['inscriptionDate'].hasError('required')">
+                      La date d'inscription est <strong>obligatoire</strong>
+                    </mat-error>
+                    <mat-datepicker-toggle matSuffix [for]="inscriptiondatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker #inscriptiondatepicker disabled="false"></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Dimplôme</mat-label>
+                  <mat-select formControlName="diploma" required>
+                    <mat-option value="MASTER">Master</mat-option>
+                    <mat-option value="THESIS">Thèse </mat-option>
+                    <mat-option value="ING">Ingénierie </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>school</mat-icon>
+                  <mat-error *ngIf="form.controls['diploma'].hasError('required')">
+                    le dimplôme <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <mat-label>Superviseur</mat-label>
+                  <mat-select formControlName="_supervisorId" required>
+                    <mat-option *ngFor="let teacher of teachers" [value]="teacher.id">
+                      {{ teacher.surname + ' ' + teacher.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+                  <mat-error *ngIf="form.controls['_supervisorId'].hasError('required')">
+                    Le superviseur est <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row" *ngIf="getMemberType()==='TEACHER'">
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <input matInput placeholder="Grade" formControlName="grade" required>
+                  <mat-icon matSuffix>grade</mat-icon>
+                  <mat-error *ngIf="form.controls['grade'].hasError('required')">
+                    La grade est <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full_width p-2" appearance="outline">
+                  <input matInput placeholder="Établissement" formControlName="establishment" required>
+                  <mat-icon matSuffix>account_balance</mat-icon>
+                  <mat-error *ngIf="form.controls['establishment'].hasError('required')">
+                    L'établissement est <strong>obligatoire</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <button mat-stroked-button color="danger" type="cancel" (click)="onCancel(); $event.preventDefault();">
+                  Annuler
+                </button>
+                <button mat-stroked-button color="primary" type="submit">
+                  Sauvgarder
+                </button>
+              </div>
+            </form>
+          </mat-card>
+
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+
+
+  </div>
+</div>
